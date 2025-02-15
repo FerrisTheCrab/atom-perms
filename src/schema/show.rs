@@ -11,7 +11,7 @@ use crate::{
 
 #[derive(Serialize, Deserialize)]
 pub struct ShowReq {
-    pub id: u64,
+    pub id: String,
     pub entries: Vec<String>,
 }
 
@@ -48,7 +48,7 @@ impl ShowRes {
 
 impl InternalRouter {
     pub async fn show(instance: &PermsInstance, payload: ShowReq) -> ShowRes {
-        Perms::get(instance, payload.id, payload.entries)
+        Perms::get(instance, &payload.id, payload.entries)
             .await
             .map(ShowRes::success)
             .unwrap_or_else(ShowRes::failure)

@@ -9,7 +9,7 @@ use crate::{
 
 #[derive(Serialize, Deserialize)]
 pub struct WipeReq {
-    pub id: u64,
+    pub id: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -45,7 +45,7 @@ impl WipeRes {
 
 impl InternalRouter {
     pub async fn wipe(instance: &PermsInstance, payload: WipeReq) -> WipeRes {
-        Perms::wipe(instance, payload.id)
+        Perms::wipe(instance, &payload.id)
             .await
             .map(WipeRes::success)
             .unwrap_or_else(WipeRes::failure)

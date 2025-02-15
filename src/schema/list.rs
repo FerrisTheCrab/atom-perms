@@ -11,7 +11,7 @@ use crate::{
 
 #[derive(Serialize, Deserialize)]
 pub struct ListReq {
-    pub id: u64,
+    pub id: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -47,7 +47,7 @@ impl ListRes {
 
 impl InternalRouter {
     pub async fn list(instance: &PermsInstance, payload: ListReq) -> ListRes {
-        Perms::list(instance, payload.id)
+        Perms::list(instance, &payload.id)
             .await
             .map(ListRes::success)
             .unwrap_or_else(ListRes::failure)

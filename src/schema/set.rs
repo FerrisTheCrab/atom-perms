@@ -21,7 +21,7 @@ impl SetEntry {
 
 #[derive(Serialize, Deserialize)]
 pub struct SetReq {
-    pub id: u64,
+    pub id: String,
     pub entries: Vec<SetEntry>,
 }
 
@@ -60,7 +60,7 @@ impl InternalRouter {
     pub async fn set(instance: &PermsInstance, payload: SetReq) -> SetRes {
         Perms::set(
             instance,
-            payload.id,
+            &payload.id,
             payload
                 .entries
                 .into_iter()

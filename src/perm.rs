@@ -59,7 +59,7 @@ impl Perms {
 
     async fn set_int(
         instance: &PermsInstance,
-        id: u64,
+        id: &str,
         entries: Vec<(String, u32)>,
     ) -> Result<(), mongodb::error::Error> {
         let mut m_set = Document::new();
@@ -77,7 +77,7 @@ impl Perms {
         if instance
             .perms
             .update_one(
-                doc! { "_id": Bson::Int64(id as i64)},
+                doc! { "_id": Self::encode(id) },
                 doc! { "$set": m_set.clone(), "$unset": m_unset},
             )
             .await?
@@ -86,23 +86,23 @@ impl Perms {
         {
             Ok(())
         } else {
-            m_set.insert("_id", Bson::Int64(id as i64));
+            m_set.insert("_id", Self::encode(id));
             instance.perms.insert_one(m_set).await?;
             Ok(())
         }
     }
 
-    async fn wipe_int(instance: &PermsInstance, id: u64) -> Result<(), mongodb::error::Error> {
+    async fn wipe_int(instance: &PermsInstance, id: &str) -> Result<(), mongodb::error::Error> {
         instance
             .perms
-            .delete_one(doc! {"_id": Bson::Int64(id as i64)})
+            .delete_one(doc! {"_id": Self::encode(id)})
             .await?;
         Ok(())
     }
 
     async fn get_int(
         instance: &PermsInstance,
-        id: u64,
+        id: &str,
         entries: Vec<String>,
     ) -> Result<BTreeMap<String, u32>, mongodb::error::Error> {
         let mut projection = Document::new();
@@ -114,7 +114,7 @@ impl Perms {
 
         let mut entry = instance
             .perms
-            .find_one(doc! { "_id": Bson::Int64(id as i64)})
+            .find_one(doc! { "_id": Self::encode(id)})
             .projection(projection)
             .await?
             .unwrap_or_default();
@@ -132,11 +132,11 @@ impl Perms {
 
     async fn list_int(
         instance: &PermsInstance,
-        id: u64,
+        id: &str,
     ) -> Result<BTreeMap<String, u32>, mongodb::error::Error> {
         let mut entry = instance
             .perms
-            .find_one(doc! {"_id": Bson::Int64(id as i64)})
+            .find_one(doc! {"_id": Self::encode(id)})
             .await?
             .unwrap_or_default();
         entry.remove("_id");
@@ -154,7 +154,7 @@ impl Perms {
 impl Perms {
     pub async fn set(
         instance: &PermsInstance,
-        id: u64,
+        id: &str,
         entries: Vec<(String, u32)>,
     ) -> Result<(), mongodb::error::Error> {
         Self::set_int(instance, id, entries).await
@@ -162,7 +162,7 @@ impl Perms {
 
     pub async fn get(
         instance: &PermsInstance,
-        id: u64,
+        id: &str,
         entries: Vec<String>,
     ) -> Result<BTreeMap<String, u32>, mongodb::error::Error> {
         Self::get_int(instance, id, entries).await
@@ -170,12 +170,12 @@ impl Perms {
 
     pub async fn list(
         instance: &PermsInstance,
-        id: u64,
+        id: &str,
     ) -> Result<BTreeMap<String, u32>, mongodb::error::Error> {
         Self::list_int(instance, id).await
     }
 
-    pub async fn wipe(instance: &PermsInstance, id: u64) -> Result<(), mongodb::error::Error> {
+    pub async fn wipe(instance: &PermsInstance, id: &str) -> Result<(), mongodb::error::Error> {
         Self::wipe_int(instance, id).await
     }
 }
