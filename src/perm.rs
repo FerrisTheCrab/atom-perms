@@ -77,7 +77,7 @@ impl Perms {
         if instance
             .perms
             .update_one(
-                doc! { "_id": Self::encode(id) },
+                doc! { "_id": id },
                 doc! { "$set": m_set.clone(), "$unset": m_unset},
             )
             .await?
@@ -86,7 +86,7 @@ impl Perms {
         {
             Ok(())
         } else {
-            m_set.insert("_id", Self::encode(id));
+            m_set.insert("_id", id);
             instance.perms.insert_one(m_set).await?;
             Ok(())
         }
@@ -95,7 +95,7 @@ impl Perms {
     async fn wipe_int(instance: &PermsInstance, id: &str) -> Result<(), mongodb::error::Error> {
         instance
             .perms
-            .delete_one(doc! {"_id": Self::encode(id)})
+            .delete_one(doc! {"_id": id})
             .await?;
         Ok(())
     }
@@ -114,7 +114,7 @@ impl Perms {
 
         let mut entry = instance
             .perms
-            .find_one(doc! { "_id": Self::encode(id)})
+            .find_one(doc! { "_id": id})
             .projection(projection)
             .await?
             .unwrap_or_default();
@@ -136,7 +136,7 @@ impl Perms {
     ) -> Result<BTreeMap<String, u32>, mongodb::error::Error> {
         let mut entry = instance
             .perms
-            .find_one(doc! {"_id": Self::encode(id)})
+            .find_one(doc! {"_id": id})
             .await?
             .unwrap_or_default();
         entry.remove("_id");
