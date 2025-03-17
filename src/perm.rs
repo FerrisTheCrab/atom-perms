@@ -93,10 +93,7 @@ impl Perms {
     }
 
     async fn wipe_int(instance: &PermsInstance, id: &str) -> Result<(), mongodb::error::Error> {
-        instance
-            .perms
-            .delete_one(doc! {"_id": id})
-            .await?;
+        instance.perms.delete_one(doc! {"_id": id}).await?;
         Ok(())
     }
 

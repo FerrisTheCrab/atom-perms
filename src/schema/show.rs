@@ -1,8 +1,10 @@
 use std::collections::BTreeMap;
 
+#[cfg(feature = "core")]
 use axum::{extract::State, http::StatusCode, Json};
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "core")]
 use crate::{
     perm::Perms,
     router::{InternalRouter, Router},
@@ -24,6 +26,7 @@ pub enum ShowRes {
     Error { reason: String },
 }
 
+#[cfg(feature = "core")]
 impl ShowRes {
     pub fn success(values: BTreeMap<String, u32>) -> Self {
         Self::Show { values }
@@ -46,6 +49,7 @@ impl ShowRes {
     }
 }
 
+#[cfg(feature = "core")]
 impl InternalRouter {
     pub async fn show(instance: &PermsInstance, payload: ShowReq) -> ShowRes {
         Perms::get(instance, &payload.id, payload.entries)
@@ -55,6 +59,7 @@ impl InternalRouter {
     }
 }
 
+#[cfg(feature = "core")]
 impl Router {
     pub async fn show(
         State(instance): State<PermsInstance>,

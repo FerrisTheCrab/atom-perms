@@ -1,6 +1,8 @@
+#[cfg(feature = "core")]
 use axum::{extract::State, http::StatusCode, Json};
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "core")]
 use crate::{
     perm::Perms,
     router::{InternalRouter, Router},
@@ -34,6 +36,7 @@ pub enum SetRes {
     Error { reason: String },
 }
 
+#[cfg(feature = "core")]
 impl SetRes {
     pub fn success(_: ()) -> Self {
         Self::Set
@@ -56,6 +59,7 @@ impl SetRes {
     }
 }
 
+#[cfg(feature = "core")]
 impl InternalRouter {
     pub async fn set(instance: &PermsInstance, payload: SetReq) -> SetRes {
         Perms::set(
@@ -73,6 +77,7 @@ impl InternalRouter {
     }
 }
 
+#[cfg(feature = "core")]
 impl Router {
     pub async fn set(
         State(instance): State<PermsInstance>,

@@ -1,6 +1,8 @@
+#[cfg(feature = "core")]
 use axum::{extract::State, http::StatusCode, Json};
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "core")]
 use crate::{
     perm::Perms,
     router::{InternalRouter, Router},
@@ -21,6 +23,7 @@ pub enum WipeRes {
     Error { reason: String },
 }
 
+#[cfg(feature = "core")]
 impl WipeRes {
     pub fn success(_: ()) -> Self {
         Self::Wiped
@@ -43,6 +46,7 @@ impl WipeRes {
     }
 }
 
+#[cfg(feature = "core")]
 impl InternalRouter {
     pub async fn wipe(instance: &PermsInstance, payload: WipeReq) -> WipeRes {
         Perms::wipe(instance, &payload.id)
@@ -52,6 +56,7 @@ impl InternalRouter {
     }
 }
 
+#[cfg(feature = "core")]
 impl Router {
     pub async fn wipe(
         State(instance): State<PermsInstance>,
